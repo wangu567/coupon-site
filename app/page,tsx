@@ -1,0 +1,30 @@
+import { supabaseBrowser } from "@/lib/supabase";
+
+export default async function HomePage() {
+  const sb = supabaseBrowser();
+  const { data: coupons, error } = await sb
+    .from("coupons")
+    .select("id,title,description,image_url,discount_price_cents,list_price_cents,created_at")
+    .order("created_at", { ascending: false });
+
+  return (
+    <>
+      <h1 style={{fontSize:24, fontWeight:700, marginBottom:12}}>Today’s Deals</h1>
+      {error && <p style={{color:"crimson"}}>{error.message}</p>}
+      <div style={{display:"grid", gap:12}}>
+        {(coupons ?? []).map(c => (
+          <div key={c.id} style={{background:"#fff", border:"1px solid #eee", borderRadius:12, padding:16}}>
+            {c.image_url && <img src={c.image_url} alt={c.title} style={{borderRadius:8, marginBottom:12, width:"100%", height:"auto"}} />}
+            <h2 style={{fontSize:18, fontWeight:600}}>{c.title}</h2>
+            {c.description && <p style={{color:"#555"}}>{c.description}</p>}
+            <div style={{display:"flex", gap:8}}>
+              <strong>P {(c.discount_price_cents/100).toFixed(2)}</strong>
+              <span style={{color:"#888", textDecoration:"line-through"}}>P {(c.list_price_cents/100).toFixed(2)}</span>
+            </div>
+          </div>
+        ))}
+        {!coupons?.length && <div style={{color:"#666"}}>No deals yet.</div>}
+      </div>
+    </>
+  );
+}
