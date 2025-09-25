@@ -11,7 +11,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "paths": { "@/": ["./"] }
+
+    // 👇 These two lines make @/ work
+    "baseUrl": ".",
+    "paths": { "@/": [""] }
   },
   "include": ["/.ts", "/.tsx", ".next/types//*.ts"],
   "exclude": ["node_modules"]
